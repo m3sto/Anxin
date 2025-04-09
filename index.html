@@ -3,217 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>安馨的秘密花园 🌸</title>
+    <title>美丽发现器</title>
     <style>
         :root {
-            --pink: #ff69b4;
-            --gold: #fff3b0;
-        }
-        * {
-            touch-action: manipulation;
-            box-sizing: border-box;
+            --ios-blue: #007AFF;
+            --ios-gray: #F5F5F5;
+            --ios-border: #E5E5EA;
         }
         body {
-            background: #fff0f5;
-            font-family: 'Hiragino Sans GB', cursive;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell;
+            background: var(--ios-gray);
             margin: 0;
-            overflow-x: hidden;
-            height: 100dvh;
-        }
-        .swipe-container {
-            width: 100vw;
-            height: 100dvh;
-            display: flex;
-            overflow-x: scroll;
-            scroll-snap-type: x mandatory;
-        }
-        .page {
-            min-width: 100vw;
-            height: 100dvh;
             padding: 20px;
-            scroll-snap-align: start;
+            height: 100dvh;
+        }
+        .settings-container {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .header {
+            padding: 20px 0;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #1D1D1F;
+            margin: 0;
+        }
+        .description {
+            color: #86868B;
+            font-size: 14px;
+            margin: 8px 0 20px;
+            text-align: center;
+        }
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--ios-border);
+        }
+        .switch {
             position: relative;
-            overflow-y: hidden;
+            display: inline-block;
+            width: 52px;
+            height: 32px;
         }
-        .heart-btn {
-            width: 70px;
-            height: 70px;
-            background: var(--pink);
-            border-radius: 50%;
-            position: fixed;
-            bottom: 30px;
-            right: 20px;
-            box-shadow: 0 5px 15px rgba(255,105,180,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 100;
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
-        .floating-kitty {
-            width: 150px;
+        .slider {
             position: absolute;
-            animation: float 3s ease-in-out infinite;
-            filter: drop-shadow(0 5px 3px rgba(0,0,0,0.1));
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        .love-letter {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            margin: 20px;
-            box-shadow: 0 5px 15px rgba(255,105,180,0.2);
-            transform: scale(0.95);
-            transition: transform 0.3s;
-        }
-        .love-letter:active {
-            transform: scale(1);
-        }
-        .sticker-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            padding: 20px;
-        }
-        .sticker {
-            width: 100%;
-            aspect-ratio: 1;
-            background: white;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
             cursor: pointer;
-            transition: transform 0.2s;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #E5E5EA;
+            transition: .4s;
+            border-radius: 16px;
         }
-        .sticker:active {
-            transform: scale(0.9);
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 28px;
+            width: 28px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .hidden-message {
+        input:checked + .slider {
+            background-color: var(--ios-blue);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        .ios-alert {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            width: 270px;
             background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(255,105,180,0.3);
-            z-index: 200;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 20px;
+            text-align: center;
+        }
+        .alert-text {
+            font-size: 17px;
+            color: #1D1D1F;
+            margin: 15px 0;
+            line-height: 1.4;
+        }
+        .ok-button {
+            background: var(--ios-blue);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 17px;
+            margin-top: 15px;
+            cursor: pointer;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <div class="swipe-container">
-        <!-- Sayfa 1 -->
-        <div class="page" style="background: #fff5f8">
-            <img src="https://www.freeiconspng.com/uploads/hello-kitty-transparent-background-13.png" 
-                 class="floating-kitty" 
-                 style="left:10%;top:10%">
-            <div class="love-letter">
-                <h2>亲爱的安馨 💌</h2>
-                <p>你是我生命中最甜蜜的惊喜<br>
-                像春天的第一朵樱花<br>
-                每次看到你的笑容<br>
-                世界都变得更美好 🌸</p>
-            </div>
-            <div class="sticker-grid">
-                <div class="sticker" onclick="revealSticker(1)">🎀</div>
-                <div class="sticker" onclick="revealSticker(2)">🌸</div>
-                <div class="sticker" onclick="revealSticker(3)">🍭</div>
-                <div class="sticker" onclick="revealSticker(4)">🎁</div>
-                <div class="sticker" onclick="revealSticker(5)">💝</div>
-                <div class="sticker" onclick="revealSticker(6)">🌈</div>
-            </div>
-        </div>
-
-        <!-- Sayfa 2 -->
-        <div class="page" style="background: #fff0f5">
-            <div id="interactiveArea" class="love-letter" style="height:70vh">
-                <h3>我们的特别时刻 📸</h3>
-                <p>轻轻触摸星星收集回忆 ✨</p>
-                <div id="starField" style="position:relative;height:200px"></div>
-            </div>
+    <div class="header">
+        <h1>美丽发现器</h1>
+        <p class="description">此功能用于找到比您更美丽更好的人</p>
+    </div>
+    
+    <div class="settings-container">
+        <div class="setting-item">
+            <span>高级美丽检测</span>
+            <label class="switch">
+                <input type="checkbox" id="beautySwitch">
+                <span class="slider"></span>
+            </label>
         </div>
     </div>
 
-    <div class="heart-btn" onclick="createHearts()">💖</div>
-
-    <div id="secretMessage" class="hidden-message">
-        <h2>你找到了! 🎉</h2>
-        <p>安馨专属魔法:<br>
-        每次点击爱心都会带来好运 💫<br>
-        → ← → ← 滑动有惊喜</p>
-        <button onclick="this.parentElement.style.display='none'">关闭</button>
+    <div id="iosAlert" class="ios-alert">
+        <div class="alert-text">没有比您更美丽更好的人了，请永远不要忘记，安馨🥹</div>
+        <button class="ok-button" onclick="this.parentElement.style.display='none'">好</button>
     </div>
 
     <script>
-        let collectedStars = 0;
-        
-        // Dokunmatik kaydırma optimizasyonu
-        let startX = 0;
-        document.querySelector('.swipe-container').addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-        }, {passive: true});
+        const switchElement = document.getElementById('beautySwitch');
+        const alertBox = document.getElementById('iosAlert');
 
-        // Etkileşimli yıldız alanı
-        document.getElementById('interactiveArea').addEventListener('click', (e) => {
-            if(collectedStars >= 5) return;
-            
-            const star = document.createElement('div');
-            star.style.position = 'absolute';
-            star.style.left = `${e.offsetX-15}px`;
-            star.style.top = `${e.offsetY-15}px`;
-            star.style.fontSize = '30px';
-            star.innerHTML = '⭐';
-            star.style.animation = 'starPop 0.5s';
-            
-            document.getElementById('starField').appendChild(star);
-            collectedStars++;
-            
-            if(collectedStars === 5) {
-                setTimeout(() => alert('收集完成! 🎉 你获得了安馨的专属微笑'), 300);
+        switchElement.addEventListener('change', function() {
+            if(this.checked) {
+                setTimeout(() => {
+                    alertBox.style.display = 'block';
+                    this.checked = false;
+                }, 300);
             }
         });
 
-        // Sticker etkileşimi
-        function revealSticker(id) {
-            const messages = [
-                "你是最可爱的!",
-                "樱花因你更美",
-                "生活像糖一样甜",
-                "每天都是礼物",
-                "你值得所有美好",
-                "我们的爱像彩虹"
-            ];
-            alert(messages[id-1] + " 💖");
-        }
-
-        // Kalp animasyonu
-        function createHearts() {
-            for(let i=0; i<10; i++) {
-                const heart = document.createElement('div');
-                heart.style.position = 'fixed';
-                heart.innerHTML = '💖';
-                heart.style.left = `${Math.random()*90 + 5}%`;
-                heart.style.top = `${Math.random()*90 + 5}%`;
-                heart.style.fontSize = `${Math.random()*30 + 20}px`;
-                heart.style.animation = `heartFloat ${Math.random()*2 + 1}s ease-out`;
-                document.body.appendChild(heart);
-                setTimeout(() => heart.remove(), 1000);
-            }
-        }
-
-        // Gizli mesaj
-        let swipeCount = 0;
-        document.querySelector('.swipe-container').addEventListener('scroll', (e) => {
-            if(++swipeCount % 3 === 0) {
-                document.getElementById('secretMessage').style.display = 'block';
-            }
+        // iOS-style touch feedback
+        document.querySelectorAll('.switch, .ok-button').forEach(button => {
+            button.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.96)';
+            });
+            button.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
         });
     </script>
 </body>
