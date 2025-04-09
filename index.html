@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>安馨的秘密花园 🌸</title>
+    <style>
+        :root {
+            --pink: #ff69b4;
+            --gold: #fff3b0;
+        }
+        * {
+            touch-action: manipulation;
+            box-sizing: border-box;
+        }
+        body {
+            background: #fff0f5;
+            font-family: 'Hiragino Sans GB', cursive;
+            margin: 0;
+            overflow-x: hidden;
+            height: 100dvh;
+        }
+        .swipe-container {
+            width: 100vw;
+            height: 100dvh;
+            display: flex;
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+        }
+        .page {
+            min-width: 100vw;
+            height: 100dvh;
+            padding: 20px;
+            scroll-snap-align: start;
+            position: relative;
+            overflow-y: hidden;
+        }
+        .heart-btn {
+            width: 70px;
+            height: 70px;
+            background: var(--pink);
+            border-radius: 50%;
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            box-shadow: 0 5px 15px rgba(255,105,180,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+        }
+        .floating-kitty {
+            width: 150px;
+            position: absolute;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 5px 3px rgba(0,0,0,0.1));
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .love-letter {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px;
+            box-shadow: 0 5px 15px rgba(255,105,180,0.2);
+            transform: scale(0.95);
+            transition: transform 0.3s;
+        }
+        .love-letter:active {
+            transform: scale(1);
+        }
+        .sticker-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+        .sticker {
+            width: 100%;
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .sticker:active {
+            transform: scale(0.9);
+        }
+        .hidden-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255,105,180,0.3);
+            z-index: 200;
+        }
+    </style>
+</head>
+<body>
+    <div class="swipe-container">
+        <!-- Sayfa 1 -->
+        <div class="page" style="background: #fff5f8">
+            <img src="https://www.freeiconspng.com/uploads/hello-kitty-transparent-background-13.png" 
+                 class="floating-kitty" 
+                 style="left:10%;top:10%">
+            <div class="love-letter">
+                <h2>亲爱的安馨 💌</h2>
+                <p>你是我生命中最甜蜜的惊喜<br>
+                像春天的第一朵樱花<br>
+                每次看到你的笑容<br>
+                世界都变得更美好 🌸</p>
+            </div>
+            <div class="sticker-grid">
+                <div class="sticker" onclick="revealSticker(1)">🎀</div>
+                <div class="sticker" onclick="revealSticker(2)">🌸</div>
+                <div class="sticker" onclick="revealSticker(3)">🍭</div>
+                <div class="sticker" onclick="revealSticker(4)">🎁</div>
+                <div class="sticker" onclick="revealSticker(5)">💝</div>
+                <div class="sticker" onclick="revealSticker(6)">🌈</div>
+            </div>
+        </div>
+
+        <!-- Sayfa 2 -->
+        <div class="page" style="background: #fff0f5">
+            <div id="interactiveArea" class="love-letter" style="height:70vh">
+                <h3>我们的特别时刻 📸</h3>
+                <p>轻轻触摸星星收集回忆 ✨</p>
+                <div id="starField" style="position:relative;height:200px"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="heart-btn" onclick="createHearts()">💖</div>
+
+    <div id="secretMessage" class="hidden-message">
+        <h2>你找到了! 🎉</h2>
+        <p>安馨专属魔法:<br>
+        每次点击爱心都会带来好运 💫<br>
+        → ← → ← 滑动有惊喜</p>
+        <button onclick="this.parentElement.style.display='none'">关闭</button>
+    </div>
+
+    <script>
+        let collectedStars = 0;
+        
+        // Dokunmatik kaydırma optimizasyonu
+        let startX = 0;
+        document.querySelector('.swipe-container').addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        }, {passive: true});
+
+        // Etkileşimli yıldız alanı
+        document.getElementById('interactiveArea').addEventListener('click', (e) => {
+            if(collectedStars >= 5) return;
+            
+            const star = document.createElement('div');
+            star.style.position = 'absolute';
+            star.style.left = `${e.offsetX-15}px`;
+            star.style.top = `${e.offsetY-15}px`;
+            star.style.fontSize = '30px';
+            star.innerHTML = '⭐';
+            star.style.animation = 'starPop 0.5s';
+            
+            document.getElementById('starField').appendChild(star);
+            collectedStars++;
+            
+            if(collectedStars === 5) {
+                setTimeout(() => alert('收集完成! 🎉 你获得了安馨的专属微笑'), 300);
+            }
+        });
+
+        // Sticker etkileşimi
+        function revealSticker(id) {
+            const messages = [
+                "你是最可爱的!",
+                "樱花因你更美",
+                "生活像糖一样甜",
+                "每天都是礼物",
+                "你值得所有美好",
+                "我们的爱像彩虹"
+            ];
+            alert(messages[id-1] + " 💖");
+        }
+
+        // Kalp animasyonu
+        function createHearts() {
+            for(let i=0; i<10; i++) {
+                const heart = document.createElement('div');
+                heart.style.position = 'fixed';
+                heart.innerHTML = '💖';
+                heart.style.left = `${Math.random()*90 + 5}%`;
+                heart.style.top = `${Math.random()*90 + 5}%`;
+                heart.style.fontSize = `${Math.random()*30 + 20}px`;
+                heart.style.animation = `heartFloat ${Math.random()*2 + 1}s ease-out`;
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1000);
+            }
+        }
+
+        // Gizli mesaj
+        let swipeCount = 0;
+        document.querySelector('.swipe-container').addEventListener('scroll', (e) => {
+            if(++swipeCount % 3 === 0) {
+                document.getElementById('secretMessage').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
